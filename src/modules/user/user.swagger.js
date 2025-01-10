@@ -21,7 +21,7 @@
 /**
  * @swagger
  * 
- * /user/whoami:
+ * /user/profile:
  *  get:
  *      summary: get user profile
  *      tags:

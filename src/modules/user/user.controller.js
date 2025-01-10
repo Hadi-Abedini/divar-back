@@ -6,7 +6,7 @@ class UserController {
         autoBind(this);
         this.#service = userService;
     }
-    async whoami(req, res, next) {
+    async profile(req, res, next) {
         try {
             const user = req.user;
             return res.json(user)
