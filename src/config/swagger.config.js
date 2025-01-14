@@ -1,5 +1,6 @@
 const swaggerJsDoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
+
 function SwaggerConfig (app) {
     const swaggerDocument = swaggerJsDoc({
         swaggerDefinition: {
@@ -25,6 +26,6 @@ function SwaggerConfig (app) {
         apis: [process.cwd() + "/src/modules/**/*.swagger.js"]
     });
     const swagger = swaggerUi.setup(swaggerDocument);
-    app.use("/swagger", swaggerUi.serve, swagger);
+    app.use("/", swaggerUi.serve, swagger);
 }
 module.exports = SwaggerConfig;

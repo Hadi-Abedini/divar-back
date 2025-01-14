@@ -1,71 +1,175 @@
 /**
  * @swagger
  * tags:
- *  name: Category
- *  description: Category Module and Routes
+ *  name: categories
+ *  description: categories Module and Routes
  */
 
 /**
  * @swagger
  *  components:
  *      schemas:
- *          CreateCategory:
+ *          Createcategories:
  *              type: object
  *              required:
- *                  -   name
- *                  -   icon
+ *                  - title
  *              properties:
- *                  name:
+ *                  title:
  *                      type: string
+ *                      description: Title of the categories
  *                  slug:
  *                      type: string
+ *                      description: Unique slug for the categories (optional)
  *                  icon:
  *                      type: string
- *                  parent:
+ *                      description: Icon URL for the categories (optional)
+ *                  image:
  *                      type: string
+ *                      description: Image URL for the categories (optional)
+ *                  items:
+ *                      type: array
+ *                      items:
+ *                          type: object
+ *                          properties:
+ *                              title:
+ *                                  type: string
+ *                              slug:
+ *                                  type: string
+ *                      description: List of subcategories (optional)
  */
 
 /**
  * @swagger
- * /category:
+ * /categories:
  *  post:
- *      summary: create new category
+ *      summary: Create a new category
  *      tags:
- *          -   Category
+ *          - categories
  *      requestBody:
+ *          required: true
  *          content:
- *              application/x-www-form-urlencoded:
- *                  schema:
- *                      $ref: '#/components/schemas/CreateCategory'
  *              application/json:
  *                  schema:
- *                      $ref: '#/components/schemas/CreateCategory'
+ *                      $ref: '#/components/schemas/Createcategories'
  *      responses:
  *          201: 
- *              description: created
+ *              description: Category created successfully
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *                          properties:
+ *                              title:
+ *                                  type: string
+ *                              icon:
+ *                                  type: string
+ *                              image:
+ *                                  type: string
+ *                              items:
+ *                                  type: array
+ *                                  items:
+ *                                      type: object
+ *                                      properties:
+ *                                          title:
+ *                                              type: string
+ *                                          slug:
+ *                                              type: string
+ *                                          items:
+ *                                              type: array
+ *                                              items:
+ *                                                  type: object
+ *                                                  properties:
+ *                                                      title:
+ *                                                          type: string
+ *                                                      slug:
+ *                                                          type: string
+ *          400:
+ *              description: Bad request, invalid data
+ *          500:
+ *              description: Internal server error
+ */
+
+/**
+ * Example of the request body:
+ * {
+ *   "title": "Art Category",
+ *   "image": "https://example.com/art-category-image.jpg",
+ *   "icon": "https://example.com/art-category-icon.png",
+ *   "items": [
+ *     {
+ *       "title": "Subcategory 1",
+ *       "slug": "test",
+ *       "items": [
+ *         {
+ *           "title": "Subsubcategory 1",
+ *           "slug": "test-subcategory"
+ *         }
+ *       ]
+ *     }
+ *   ]
+ * }
  */
 /**
  * @swagger
- * /category:
+ * /categories:
  *  get:
- *      summary: get all categories
+ *      summary: Get all categories
  *      tags:
- *          -   Category
+ *          - categories
  *      responses:
  *          200: 
- *              description: successfully
+ *              description: Successfully retrieved all categories
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: array
+ *                          items:
+ *                              type: object
+ *                              properties:
+ *                                  _id:
+ *                                      type: string
+ *                                  title:
+ *                                      type: string
+ *                                  slug:
+ *                                      type: string
+ *                                  icon:
+ *                                      type: string
+ *                                  image:
+ *                                      type: string
+ *                                  items:
+ *                                      type: array
+ *                                      items:
+ *                                          type: object
+ *                                          properties:
+ *                                              title:
+ *                                                  type: string
+ *                                              slug:
+ *                                                  type: string
+ *          500:
+ *              description: Internal server error
  */
+
 /**
  * @swagger
- * /category/{id}:
+ * /categories/{id}:
  *  delete:
- *      summary: get all categories
+ *      summary: Delete a categories by ID
  *      tags:
- *          -   Category
+ *          - categories
  *      parameters:
- *          -   in: path
- *              name: id
+ *          - in: path
+ *            name: id
+ *            required: true
+ *            description: The ID of the categories to be deleted
+ *            schema:
+ *              type: string
  *      responses:
- *          200: 
- *              description: successfully
+ *          200:
+ *              description: categories deleted successfully
+ *          400:
+ *              description: Invalid categories ID
+ *          404:
+ *              description: categories not found
+ *          500:
+ *              description: Internal server error
  */
