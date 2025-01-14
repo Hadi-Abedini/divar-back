@@ -1,40 +1,25 @@
 const autoBind = require("auto-bind");
-const CategoryModel = require("./category.model");
-const OptionModel = require("../option/option.model");
-const SubcategoryService = require("../subcategory/sub.category.service");
+const SubSubCategoryModel = require("./sub.sub.category.model");
 const createHttpError = require("http-errors");
-const { CategoryMessage } = require("./category.message");
+const { CategoryMessage } = require("./sub.sub.category.message");
 const { default: slugify } = require("slugify");
 
-class CategoryService {
+class SubSubCategoryService {
   #model;
   #optionModel;
-  #subServe;
   constructor() {
     autoBind(this);
-    this.#model = CategoryModel;
-    this.#optionModel = OptionModel;
-    this.#subServe = SubcategoryService;
+    this.#model = SubSubCategoryModel;
   }
 
   async find() {
-    const categories = await this.#model.find({});
-
-    for (let category of categories) {      
-      const subCategories = await this.#subServe.findById(category._id.toString());            
-      category.items = subCategories;
-    }
-    console.log(categories);
-    return categories;
+    return await this.#model.find({});
   }
 
   async findById(id) {
-    const category = await this.#model.findById(id);
-
-    if (!category) {
-      throw new createHttpError.NotFound(CategoryMessage.NotFound);
-    }
-    return category;
+    const subSubCategory = await this.#model.find();
+    subSubCategory.filter((item) => item.sub_category === id);
+    return subSubCategory.filter((item) => item.sub_category === id) || [];
   }
 
   async remove(id) {
@@ -70,4 +55,4 @@ class CategoryService {
   }
 }
 
-module.exports = new CategoryService();
+module.exports = new SubSubCategoryService();

@@ -1,20 +1,20 @@
 const autoBind = require("auto-bind");
-const categoryService = require("./category.service");
-const { CategoryMessage } = require("./category.message");
+const SubSubCategoryService = require("./sub.sub.category.service");
+const { SubSubCategoryMessage } = require("./sub.sub.category.message");
 const HttpCodes = require("http-codes");
-class CategoryController {
+class SubSubCategoryController {
   #service;
   constructor() {
     autoBind(this);
-    this.#service = categoryService;
+    this.#service = SubSubCategoryService;
   }
 
   async create(req, res, next) {
     try {
-      const { title, icon, items, image, slug } = req.body;
-      await this.#service.create({ title, icon, items, image, slug });
+      const { title, slug, sub_category } = req.body;
+      await this.#service.create({ title, slug, sub_category });
       return res.status(HttpCodes.CREATED).json({
-        message: CategoryMessage.Created,
+        message: SubSubCategoryMessage.Created,
       });
     } catch (error) {
       next(error);
@@ -22,8 +22,8 @@ class CategoryController {
   }
   async find(req, res, next) {
     try {
-      const categories = await this.#service.find();
-      return res.json(categories);
+      const subSubCategory = await this.#service.find();
+      return res.json(subSubCategory);
     } catch (error) {
       next(error);
     }
@@ -31,8 +31,8 @@ class CategoryController {
   async findById(req, res, next) {
     try {
       const { id } = req.params;
-      const category = await this.#service.findById(id);
-      return res.json(category);
+      const subSubCategory = await this.#service.findById(id);
+      return res.json({subSubCategory});
     } catch (error) {
       next(error);
     }
@@ -42,7 +42,7 @@ class CategoryController {
       const { id } = req.params;
       await this.#service.remove(id);
       return res.json({
-        message: CategoryMessage.Deleted,
+        message: SubSubCategoryMessage.Deleted,
       });
     } catch (error) {
       next(error);
@@ -50,4 +50,4 @@ class CategoryController {
   }
 }
 
-module.exports = new CategoryController();
+module.exports = new SubSubCategoryController();
