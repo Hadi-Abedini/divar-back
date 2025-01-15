@@ -24,7 +24,6 @@ class CategoryService {
       const subCategories = await this.#subServe.findById(category._id.toString());            
       category.items = subCategories;
     }
-    console.log(categories);
     return categories;
   }
 
