@@ -13,11 +13,12 @@ if (!!dotenvConfig.error) {
 
 const port = process.env.PORT;
 const host = process.env.HOST;
+const adinPhone = process.env.ADMIN_PHONE;
 const { app } = require('./app');
 
 const server = createServer(app);
 
 server.listen(port, () => {
-	console.info(`admin username:admin password:admin1234`);
+	console.info(`admin phone:${adinPhone}`);
 	console.info(`[i] server running on ${host}:${port}...`);
 });
