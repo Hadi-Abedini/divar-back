@@ -33,20 +33,6 @@ const UserSchema = new Schema(
   }
 );
 
-UserSchema.index({ phone: 1 }, { unique: true });
-
-UserSchema.pre('save', async function(next) {
-  try {
-    const indexes = await this.collection.getIndexes();
-    if (indexes.code_1) {
-      await this.collection.dropIndex("code_1");
-    }
-    next();
-  } catch (error) {
-    next(error);
-  }
-});
-
 const User = model("User", UserSchema);
 
 module.exports = User;

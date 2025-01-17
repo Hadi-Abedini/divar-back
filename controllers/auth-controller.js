@@ -182,6 +182,58 @@ const protect = asyncHandler(async (req, res, next) => {
   next();
 });
 
+const protectAdmin = asyncHandler(async (req, res, next) => {
+  const { authorization = null } = req.headers;
+
+  if (!authorization) {
+    return res.status(401).json({
+      error: "You are not logged in! Please log in to get access",
+    });
+  }
+  const token = authorization.split(" ")[1];
+  jwt.verify(token, process.env.JWT_ACCESS_TOKEN_SECRET, (err, decoded) => {
+    if (err instanceof jwt.TokenExpiredError) {
+      return res.status(401).json({
+        error: "Token is Expired",
+      });
+    }
+    if (err instanceof jwt.JsonWebTokenError) {
+      return res.status(401).json({
+        hi: "ho",
+        error: "Token is Invalid",
+      });
+    }
+  });
+
+  if (!authorization || !authorization.startsWith("Bearer")) {
+    return next(
+      new AppError(401, "You are not logged in! Please log in to get access")
+    );
+  }
+
+  const decoded = await promisify(jwt.verify)(
+    token,
+    process.env.JWT_ACCESS_TOKEN_SECRET
+  );
+
+  const user = await User.findById(decoded.id);
+
+  if (!user) {
+    return next(
+      new AppError(401, "The user belonging to this token does no longer exist")
+    );
+  }
+
+  if(user.role==='USER'){
+    return next(
+      new AppError(403, "You dont have permision for this action.")
+    );
+  }
+
+  req.userId = user._id;
+  next();
+});
+
 const restrictTo = (...roles) => {
   return asyncHandler(async (req, res, next) => {
     const { userId = null } = req;
@@ -230,6 +282,7 @@ module.exports = {
   logout,
   getProfile,
   protect,
+  protectAdmin,
   restrictTo,
   generateAccessToken,
   authenticateRefreshToken,
