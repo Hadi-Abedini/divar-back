@@ -17,7 +17,7 @@ router.get('/', asyncHandler(getAllSubcategories));
 
 router.post(
 	'/',
-	// validator(addSubcategoryValidationSchema),
+	validator(addSubcategoryValidationSchema),
 	asyncHandler(addSubcategory)
 );
 

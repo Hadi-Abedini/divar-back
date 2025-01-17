@@ -63,21 +63,18 @@ const signin = asyncHandler(async (req, res, next) => {
     return next(new AppError(400, 'Phone number and OTP are required'));
   }
 
-  // بررسی OTP
   const otp = await OTP.findOne({ 
     phone, 
     code: parseInt(code),
-    createdAt: { $gt: new Date(Date.now() - 120000) } // چک کردن منقضی نشدن
+    createdAt: { $gt: new Date(Date.now() - 120000) }
   });
 
   if (!otp) {
     return next(new AppError(401, 'Invalid or expired OTP'));
   }
 
-  // حذف OTP پس از استفاده
   await OTP.deleteOne({ _id: otp._id });
 
-  // یافتن یا ایجاد کاربر
   let user = await User.findOne({ phone });
 
   if (!user) {
@@ -87,10 +84,8 @@ const signin = asyncHandler(async (req, res, next) => {
     });
   }
 
-  // ایجاد توکن‌ها
   const { accessToken, refreshToken } = signToken(user._id);
 
-  // ذخیره refresh token
   user.refreshToken = refreshToken;
   await user.save({ validateBeforeSave: false });
 
@@ -122,10 +117,8 @@ const getProfile = asyncHandler(async (req, res, next) => {
     );
   }
 
-  // استخراج توکن از هدر
   const token = authorization.split(" ")[1];
 
-  // بررسی و استخراج اطلاعات از توکن
   const decoded = await promisify(jwt.verify)(
     token,
     process.env.JWT_ACCESS_TOKEN_SECRET
