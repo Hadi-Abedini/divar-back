@@ -1,27 +1,23 @@
-const express = require("express");
-const dotenv = require("dotenv");
-const SwaggerConfig = require("./src/config/swagger.config");
-const mainRouter = require("./src/app.routes");
-const NotFoundHandler = require("./src/common/exception/not-found.handler");
-const AllExceptionHandler = require("./src/common/exception/all-exception.handler");
-const cors = require("cors");
-dotenv.config();
-async function main () {
-    const app = express();
-    const port = process.env.PORT || 4000;
-    require("./src/config/mongoose.config");
-    app.use(cors({
-        origin: "*"
-    }));
-    app.use(express.json());
-    app.use(express.urlencoded({extended: true}));
-    app.use(express.static("public"));
-    app.use(mainRouter);
-    SwaggerConfig(app);
-    NotFoundHandler(app);
-    AllExceptionHandler(app);
-    app.listen(port, () => {
-        console.log(`server: http://localhost:${port}`);
-    });
+const { join } = require('node:path');
+const { createServer } = require('node:http');
+const dotenv = require('dotenv');
+
+const dotenvConfig = dotenv.config({ path: join(__dirname, './config.env') });
+
+if (!!dotenvConfig.error) {
+	console.error(`[-] dotenv config > ${dotenvConfig.error}`);
+
+	console.info('[i] proccess terminated');
+	process.exit(1);
 }
-main();
+
+const port = process.env.PORT;
+const host = process.env.HOST;
+const { app } = require('./app');
+
+const server = createServer(app);
+
+server.listen(port, () => {
+	console.info(`admin username:admin password:admin1234`);
+	console.info(`[i] server running on ${host}:${port}...`);
+});
